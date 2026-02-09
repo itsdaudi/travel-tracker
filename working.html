@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --success-color: #4ade80;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            min-height: 95vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+            min-height: 70vh;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .left-panel {
+            background: var(--light-color);
+            padding: 2rem;
+            border-right: 1px solid var(--light-gray);
+        }
+
+        @media (max-width: 1024px) {
+            .left-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--light-gray);
+            }
+        }
+
+        .right-panel {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Forms */
+        .add-place-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .add-place-form h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .star {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ccc;
+            transition: var(--transition);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark-color);
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+        }
+
+        .btn-icon:hover {
+            color: var(--dark-color);
+        }
+
+        /* Places List */
+        .places-list {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .list-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            background: var(--light-color);
+        }
+
+        .list-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .filter-options {
+                flex-direction: column;
+            }
+        }
+
+        .filter-options select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+        }
+
+        /* Places Container */
+        .places-container {
+            padding: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--gray-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Place Cards */
+        .place-card {
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .place-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .place-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .place-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .place-rating {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .place-card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .place-meta {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .place-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--light-color);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .place-card-preview {
+            margin-bottom: 1rem;
+            color: var(--gray-color);
+            line-height: 1.5;
+        }
+
+        .place-card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-view {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .btn-view:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            transition: var(--transition);
+        }
+
+        .btn-delete:hover {
+            transform: scale(1.1);
+        }
+
+        /* Place Details */
+        .place-details {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            background: var(--light-color);
+        }
+
+        .details-header h2 {
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .details-content {
+            padding: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .empty-details {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--gray-color);
+        }
+
+        .empty-details i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .details-card {
+            background: white;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .details-header h3 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .details-rating {
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
+
+        .rating-number {
+            color: var(--gray-color);
+            font-size: 1rem;
+            vertical-align: middle;
+        }
+
+        .details-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meta-item i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+
+        .meta-value {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .details-section {
+            margin-bottom: 2rem;
+        }
+
+        .details-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .landmarks-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .landmark {
+            background: var(--light-color);
+            color: var(--dark-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .details-notes {
+            line-height: 1.6;
+            color: var(--dark-color);
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        .details-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .details-actions {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .btn-delete-full {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-delete-full:hover {
+            background: #d63384;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--light-color);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray-color);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .stats {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-success {
+            background: var(--success-color);
+        }
+
+        .notification-error {
+            background: var(--danger-color);
+        }
+
+        .notification.fade-out {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--light-gray);
+            }
+            
+            .right-panel {
+                grid-template-rows: auto;
+            }
+            
+            .place-details {
+                margin-top: 2rem;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .details-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-globe-americas"></i> My Travel Journal</h1>
+            <p class="subtitle">Track and remember all the amazing places you've visited</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="add-place-form">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Place</h2>
+                    <form id="placeForm">
+                        <div class="form-group">
+                            <label for="location"><i class="fas fa-map-marker-alt"></i> Location *</label>
+                            <input type="text" id="location" required placeholder="e.g., Paris, France">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="landmarks"><i class="fas fa-landmark"></i> Landmarks (comma separated)</label>
+                            <input type="text" id="landmarks" placeholder="e.g., Eiffel Tower, Louvre Museum">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timeOfYear"><i class="fas fa-calendar-alt"></i> Time of Year</label>
+                            <select id="timeOfYear">
+                                <option value="">Select season</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Winter">Winter</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="year"><i class="fas fa-calendar"></i> Year</label>
+                            <input type="number" id="year" min="1900" max="2100" placeholder="e.g., 2023">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rating"><i class="fas fa-star"></i> Rating (1-5)</label>
+                            <div class="rating-input">
+                                <span class="star" data-value="1">☆</span>
+                                <span class="star" data-value="2">☆</span>
+                                <span class="star" data-value="3">☆</span>
+                                <span class="star" data-value="4">☆</span>
+                                <span class="star" data-value="5">☆</span>
+                            </div>
+                            <input type="hidden" id="rating" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes"><i class="fas fa-sticky-note"></i> Notes</label>
+                            <textarea id="notes" rows="3" placeholder="Share your experiences, memories, or tips..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tags"><i class="fas fa-tags"></i> Tags (comma separated)</label>
+                            <input type="text" id="tags" placeholder="e.g., beach, family, adventure">
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Add Place
+                            </button>
+                            <button type="button" id="resetBtn" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="places-list">
+                    <div class="list-header">
+                        <h2><i class="fas fa-list"></i> My Travel Destinations</h2>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search places...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="filter-options">
+                            <select id="filterRating">
+                                <option value="">Filter by rating</option>
+                                <option value="5">★★★★★</option>
+                                <option value="4">★★★★☆ & above</option>
+                                <option value="3">★★★☆☆ & above</option>
+                                <option value="2">★★☆☆☆ & above</option>
+                                <option value="1">★☆☆☆☆ & above</option>
+                            </select>
+                            <select id="filterSeason">
+                                <option value="">Filter by season</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Winter">Winter</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="placesContainer" class="places-container">
+                        <!-- Places will be dynamically inserted here -->
+                        <div class="empty-state">
+                            <i class="fas fa-suitcase-rolling"></i>
+                            <h3>No places added yet</h3>
+                            <p>Add your first travel destination to get started!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="place-details" id="placeDetails">
+                    <div class="details-header">
+                        <h2><i class="fas fa-info-circle"></i> Place Details</h2>
+                        <button id="closeDetails" class="btn-icon"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="details-content">
+                        <div class="empty-details">
+                            <i class="fas fa-hand-pointer"></i>
+                            <p>Click on a place to view its details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Travel Tracker • Made with <i class="fas fa-heart"></i> for travelers</p>
+            <p class="stats" id="stats">Total Places: 0 • Average Rating: 0 • Most Visited Season: N/A</p>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript - Business Logic
+        class Place {
+            constructor(location, landmarks = [], timeOfYear = '', year = null, notes = '', rating = 0, tags = []) {
+                this.location = location;
+                this.landmarks = Array.isArray(landmarks) ? landmarks : landmarks.split(',').map(l => l.trim()).filter(l => l);
+                this.timeOfYear = timeOfYear;
+                this.year = year ? parseInt(year) : null;
+                this.notes = notes;
+                this.rating = Math.max(0, Math.min(5, parseInt(rating) || 0));
+                this.tags = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t);
+                this.id = Date.now() + Math.random().toString(36).substr(2, 9);
+                this.createdAt = new Date();
+            }
+
+            // Getters
+            get location() { return this._location; }
+            get landmarks() { return this._landmarks; }
+            get timeOfYear() { return this._timeOfYear; }
+            get year() { return this._year; }
+            get notes() { return this._notes; }
+            get rating() { return this._rating; }
+            get tags() { return this._tags; }
+
+            // Setters with validation
+            set location(value) {
+                if (!value || typeof value !== 'string' || value.trim() === '') {
+                    throw new Error('Location is required and must be a non-empty string');
+                }
+                this._location = value.trim();
+            }
+
+            set landmarks(value) {
+                if (!Array.isArray(value)) {
+                    throw new Error('Landmarks must be an array');
+                }
+                this._landmarks = value;
+            }
+
+            set timeOfYear(value) {
+                const validSeasons = ['Spring', 'Summer', 'Fall', 'Winter', ''];
+                if (value && !validSeasons.includes(value)) {
+                    throw new Error('Time of year must be one of: Spring, Summer, Fall, Winter');
+                }
+                this._timeOfYear = value;
+            }
+
+            set year(value) {
+                if (value !== null && (isNaN(value) || value < 1900 || value > 2100)) {
+                    throw new Error('Year must be between 1900 and 2100');
+                }
+                this._year = value;
+            }
+
+            set notes(value) {
+                this._notes = String(value);
+            }
+
+            set rating(value) {
+                const num = parseInt(value);
+                if (isNaN(num) || num < 0 || num > 5) {
+                    throw new Error('Rating must be a number between 0 and 5');
+                }
+                this._rating = num;
+            }
+
+            set tags(value) {
+                if (!Array.isArray(value)) {
+                    throw new Error('Tags must be an array');
+                }
+                this._tags = value;
+            }
+
+            // Method to get star rating display
+            getStarRating() {
+                const stars = '★'.repeat(this.rating) + '☆'.repeat(5 - this.rating);
+                return stars;
+            }
+
+            // Method to format the place for display
+            toDisplayString() {
+                const yearStr = this.year ? ` (${this.year})` : '';
+                const seasonStr = this.timeOfYear ? ` in ${this.timeOfYear}` : '';
+                return `${this.location}${yearStr}${seasonStr}`;
+            }
+
+            // Method to check if place matches search term
+            matchesSearch(searchTerm) {
+                const term = searchTerm.toLowerCase();
+                return this.location.toLowerCase().includes(term) ||
+                       this.landmarks.some(l => l.toLowerCase().includes(term)) ||
+                       this.notes.toLowerCase().includes(term) ||
+                       this.tags.some(t => t.toLowerCase().includes(term));
+            }
+
+            // Method to check if place matches filter criteria
+            matchesFilter(minRating = 0, season = '') {
+                const ratingMatch = this.rating >= minRating;
+                const seasonMatch = !season || this.timeOfYear === season;
+                return ratingMatch && seasonMatch;
+            }
+        }
+
+        // TravelJournal class to manage multiple places
+        class TravelJournal {
+            constructor() {
+                this.places = [];
+                this.loadFromStorage();
+            }
+
+            // Add a new place
+            addPlace(place) {
+                if (!(place instanceof Place)) {
+                    throw new Error('Can only add Place objects');
+                }
+                this.places.push(place);
+                this.saveToStorage();
+                return place;
+            }
+
+            // Remove a place by ID
+            removePlace(id) {
+                const index = this.places.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    this.places.splice(index, 1);
+                    this.saveToStorage();
+                    return true;
+                }
+                return false;
+            }
+
+            // Get a place by ID
+            getPlace(id) {
+                return this.places.find(p => p.id === id);
+            }
+
+            // Get all places
+            getAllPlaces() {
+                return [...this.places].sort((a, b) => b.createdAt - a.createdAt);
+            }
+
+            // Search places
+            searchPlaces(searchTerm) {
+                if (!searchTerm) return this.getAllPlaces();
+                return this.places.filter(p => p.matchesSearch(searchTerm));
+            }
+
+            // Filter places
+            filterPlaces(minRating = 0, season = '') {
+                return this.places.filter(p => p.matchesFilter(minRating, season));
+            }
+
+            // Get statistics
+            getStats() {
+                const total = this.places.length;
+                const avgRating = total > 0 
+                    ? (this.places.reduce((sum, p) => sum + p.rating, 0) / total).toFixed(1)
+                    : 0;
+                const seasons = this.places.reduce((acc, p) => {
+                    if (p.timeOfYear) acc[p.timeOfYear] = (acc[p.timeOfYear] || 0) + 1;
+                    return acc;
+                }, {});
+                
+                // Find most visited season
+                let mostVisitedSeason = 'N/A';
+                let maxCount = 0;
+                for (const [season, count] of Object.entries(seasons)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostVisitedSeason = season;
+                    }
+                }
+                
+                return { total, avgRating, seasons, mostVisitedSeason };
+            }
+
+            // Save to localStorage
+            saveToStorage() {
+                try {
+                    localStorage.setItem('travelJournal', JSON.stringify(this.places));
+                } catch (e) {
+                    console.warn('Could not save to localStorage:', e);
+                }
+            }
+
+            // Load from localStorage
+            loadFromStorage() {
+                try {
+                    const stored = localStorage.getItem('travelJournal');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.places = data.map(p => new Place(
+                            p._location,
+                            p._landmarks,
+                            p._timeOfYear,
+                            p._year,
+                            p._notes,
+                            p._rating,
+                            p._tags
+                        ));
+                    }
+                } catch (e) {
+                    console.warn('Could not load from localStorage:', e);
+                }
+            }
+
+            // Clear all places
+            clearAll() {
+                this.places = [];
+                localStorage.removeItem('travelJournal');
+            }
+        }
+
+        // Test suite for TDD
+        class PlaceTests {
+            static runAllTests() {
+                const tests = [
+                    this.testPlaceCreation,
+                    this.testPlaceValidation,
+                    this.testPlaceMethods,
+                    this.testTravelJournal
+                ];
+                
+                let passed = 0;
+                let failed = 0;
+                
+                tests.forEach((test, index) => {
+                    try {
+                        test();
+                        console.log(`✓ Test ${index + 1} passed`);
+                        passed++;
+                    } catch (error) {
+                        console.error(`✗ Test ${index + 1} failed:`, error.message);
+                        failed++;
+                    }
+                });
+                
+                console.log(`\nTest Results: ${passed} passed, ${failed} failed`);
+                return { passed, failed };
+            }
+
+         
+            static testPlaceCreation() {
+    // Test basic creation
+    const place = new Place(
+        "New York, USA",  // You're creating this
+        ["Times Square", "Statue of Liberty"],
+        "Spring",
+        2023,
+        "Beautiful in spring!",
+        5,
+        ["city", "art", "romantic"]
+    );
+    
+    // Check for what you actually created
+    if (place.location !== "New York, USA") throw new Error('Location not set correctly');
+    if (place.timeOfYear !== "Spring") throw new Error('Time of year not set correctly');
+    if (place.landmarks.length !== 2) throw new Error('Landmarks not set correctly');
+    if (place.year !== 2023) throw new Error('Year not set correctly');
+    if (place.rating !== 5) throw new Error('Rating not set correctly');
+    if (place.tags.length !== 3) throw new Error('Tags not set correctly');
+
+    // Test with minimal data
+    const minimalPlace = new Place("Tokyo");
+    if (minimalPlace.location !== "Tokyo") throw new Error('Minimal location not correct');
+    if (minimalPlace.landmarks.length !== 0) throw new Error('Minimal landmarks not correct');
+}
+            static testPlaceValidation() {
+                // Test invalid location
+                try {
+                    new Place("");
+                    throw new Error('Should have thrown error for empty location');
+                } catch (e) {
+                    if (!e.message.includes('Location is required')) throw e;
+                }
+                
+                // Test invalid rating
+                try {
+                    new Place("Test", [], "", null, "", 6);
+                    throw new Error('Should have thrown error for invalid rating');
+                } catch (e) {
+                    if (!e.message.includes('Rating must be')) throw e;
+                }
+                
+                // Test invalid year
+                try {
+                    new Place("Test", [], "", 1899);
+                    throw new Error('Should have thrown error for invalid year');
+                } catch (e) {
+                    if (!e.message.includes('Year must be')) throw e;
+                }
+            }
+
+            static testPlaceMethods() {
+                const place = new Place("Test", ["Landmark1"], "Summer", 2022, "Notes", 4, ["tag1"]);
+                
+                // Test display string
+                const display = place.toDisplayString();
+                if (!display.includes("Test")) throw new Error('Display string incorrect');
+                
+                // Test star rating
+                const stars = place.getStarRating();
+                if (stars !== "★★★★☆") throw new Error('Star rating incorrect');
+                
+                // Test search matching
+                if (!place.matchesSearch("test")) throw new Error('Search not working');
+                if (!place.matchesSearch("landmark")) throw new Error('Landmark search not working');
+                if (!place.matchesSearch("tag1")) throw new Error('Tag search not working');
+                
+                // Test filter matching
+                if (!place.matchesFilter(3, "Summer")) throw new Error('Filter not working');
+                if (place.matchesFilter(5, "Summer")) throw new Error('Rating filter not working');
+            }
+
+            static testTravelJournal() {
+                const journal = new TravelJournal();
+                journal.clearAll(); // Start fresh
+                
+                // Test adding places
+                const place1 = new Place("Place1", [], "Spring", 2023, "", 3);
+                const place2 = new Place("Place2", [], "Summer", 2023, "", 5);
+                
+                journal.addPlace(place1);
+                journal.addPlace(place2);
+                
+                if (journal.getAllPlaces().length !== 2) throw new Error('Not all places added');
+                
+                // Test search
+                const searchResults = journal.searchPlaces("Place1");
+                if (searchResults.length !== 1) throw new Error('Search not working correctly');
+                
+                // Test filter
+                const filtered = journal.filterPlaces(4, "");
+                if (filtered.length !== 1) throw new Error('Filter not working correctly');
+                
+                // Test stats
+                const stats = journal.getStats();
+                if (stats.total !== 2) throw new Error('Stats total incorrect');
+                if (stats.avgRating !== "4.0") throw new Error('Stats average incorrect');
+                
+                // Test removal
+                journal.removePlace(place1.id);
+                if (journal.getAllPlaces().length !== 1) throw new Error('Removal not working');
+                
+                journal.clearAll();
+            }
+        }
+
+        // Run tests if in test mode
+        if (window.location.href.includes('test=true')) {
+            console.log('Running Place Object Tests...');
+            PlaceTests.runAllTests();
+        }
+
+        // JavaScript - UI Implementation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize travel journal
+            const journal = new TravelJournal();
+            
+            // DOM Elements
+            const placeForm = document.getElementById('placeForm');
+            const placesContainer = document.getElementById('placesContainer');
+            const placeDetails = document.querySelector('.place-details .details-content');
+            const searchInput = document.getElementById('searchInput');
+            const filterRating = document.getElementById('filterRating');
+            const filterSeason = document.getElementById('filterSeason');
+            const resetBtn = document.getElementById('resetBtn');
+            const closeDetails = document.getElementById('closeDetails');
+            const statsElement = document.getElementById('stats');
+            
+            // Star rating UI
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            
+            // Setup star rating interaction
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    ratingInput.value = value;
+                    updateStarDisplay(value);
+                });
+                
+                star.addEventListener('mouseover', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    highlightStars(value);
+                });
+            });
+            
+            // Reset star highlight when mouse leaves rating area
+            document.querySelector('.rating-input').addEventListener('mouseleave', () => {
+                const currentValue = parseInt(ratingInput.value);
+                updateStarDisplay(currentValue);
+            });
+            
+            function updateStarDisplay(value) {
+                stars.forEach(star => {
+                    const starValue = parseInt(star.getAttribute('data-value'));
+                    if (starValue <= value) {
+                        star.textContent = '★';
+                        star.style.color = '#ffd700';
+                    } else {
+                        star.textContent = '☆';
+                        star.style.color = '#ccc';
+                    }
+                });
+            }
+            
+            function highlightStars(value) {
+                stars.forEach(star => {
+                    const starValue = parseInt(star.getAttribute('data-value'));
+                    if (starValue <= value) {
+                        star.style.color = '#ffd700';
+                    } else {
+                        star.style.color = '#ccc';
+                    }
+                });
+            }
+            
+            // Form submission
+            placeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                try {
+                    // Get form values
+                    const location = document.getElementById('location').value;
+                    const landmarks = document.getElementById('landmarks').value;
+                    const timeOfYear = document.getElementById('timeOfYear').value;
+                    const year = document.getElementById('year').value;
+                    const notes = document.getElementById('notes').value;
+                    const rating = ratingInput.value;
+                    const tags = document.getElementById('tags').value;
+                    
+                    // Create new place
+                    const place = new Place(location, landmarks, timeOfYear, year, notes, rating, tags);
+                    
+                    // Add to journal
+                    journal.addPlace(place);
+                    
+                    // Reset form
+                    placeForm.reset();
+                    ratingInput.value = 0;
+                    updateStarDisplay(0);
+                    
+                    // Update UI
+                    renderPlaces();
+                    updateStats();
+                    
+                    // Show success message
+                    showNotification('Place added successfully!', 'success');
+                    
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                }
+            });
+            
+            // Reset form
+            resetBtn.addEventListener('click', function() {
+                placeForm.reset();
+                ratingInput.value = 0;
+                updateStarDisplay(0);
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', renderPlaces);
+            
+            // Filter functionality
+            filterRating.addEventListener('change', renderPlaces);
+            filterSeason.addEventListener('change', renderPlaces);
+            
+            // Close details panel
+            closeDetails.addEventListener('click', function() {
+                document.querySelector('.place-details').classList.remove('active');
+            });
+            
+            // Render places list
+            function renderPlaces() {
+                const searchTerm = searchInput.value;
+                const minRating = parseInt(filterRating.value) || 0;
+                const season = filterSeason.value;
+                
+                let places;
+                if (searchTerm) {
+                    places = journal.searchPlaces(searchTerm);
+                } else {
+                    places = journal.filterPlaces(minRating, season);
+                }
+                
+                placesContainer.innerHTML = '';
+                
+                if (places.length === 0) {
+                    const emptyState = document.createElement('div');
+                    emptyState.className = 'empty-state';
+                    emptyState.innerHTML = `
+                        <i class="fas fa-search"></i>
+                        <h3>No places found</h3>
+                        <p>Try a different search or filter</p>
+                    `;
+                    placesContainer.appendChild(emptyState);
+                    return;
+                }
+                
+                places.forEach(place => {
+                    const placeElement = createPlaceElement(place);
+                    placesContainer.appendChild(placeElement);
+                });
+            }
+            
+            // Create place element
+            function createPlaceElement(place) {
+                const div = document.createElement('div');
+                div.className = 'place-card';
+                div.setAttribute('data-id', place.id);
+                
+                const stars = place.getStarRating();
+                const yearText = place.year ? ` • ${place.year}` : '';
+                const seasonText = place.timeOfYear ? ` • ${place.timeOfYear}` : '';
+                
+                div.innerHTML = `
+                    <div class="place-card-header">
+                        <h3 class="place-title">${place.location}</h3>
+                        <span class="place-rating">${stars}</span>
+                    </div>
+                    <div class="place-card-meta">
+                        <span class="place-meta">
+                            <i class="fas fa-calendar"></i>${yearText}${seasonText}
+                        </span>
+                        ${place.landmarks.length > 0 ? `
+                            <span class="place-meta">
+                                <i class="fas fa-landmark"></i> ${place.landmarks.length} landmark(s)
+                            </span>
+                        ` : ''}
+                    </div>
+                    ${place.tags.length > 0 ? `
+                        <div class="place-card-tags">
+                            ${place.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    ${place.notes ? `
+                        <div class="place-card-preview">
+                            <p>${truncateText(place.notes, 80)}</p>
+                        </div>
+                    ` : ''}
+                    <div class="place-card-actions">
+                        <button class="btn-view"><i class="fas fa-eye"></i> View Details</button>
+                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                
+                // Add event listeners
+                div.querySelector('.btn-view').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showPlaceDetails(place.id);
+                });
+                div.querySelector('.btn-delete').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deletePlace(place.id);
+                });
+                
+                div.addEventListener('click', (e) => {
+                    if (!e.target.closest('.btn-delete') && !e.target.closest('.btn-view')) {
+                        showPlaceDetails(place.id);
+                    }
+                });
+                
+                return div;
+            }
+            
+            // Show place details
+            function showPlaceDetails(id) {
+                const place = journal.getPlace(id);
+                if (!place) return;
+                
+                const stars = place.getStarRating();
+                
+                placeDetails.innerHTML = `
+                    <div class="details-card">
+                        <div class="details-header">
+                            <h3>${place.location}</h3>
+                            <div class="details-rating">${stars} <span class="rating-number">(${place.rating}/5)</span></div>
+                        </div>
+                        
+                        <div class="details-meta">
+                            ${place.year ? `
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <div>
+                                        <span class="meta-label">Year</span>
+                                        <span class="meta-value">${place.year}</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${place.timeOfYear ? `
+                                <div class="meta-item">
+                                    <i class="fas fa-sun"></i>
+                                    <div>
+                                        <span class="meta-label">Season</span>
+                                        <span class="meta-value">${place.timeOfYear}</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <span class="meta-label">Added</span>
+                                    <span class="meta-value">${formatDate(place.createdAt)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${place.landmarks.length > 0 ? `
+                            <div class="details-section">
+                                <h4><i class="fas fa-landmark"></i> Landmarks & Attractions</h4>
+                                <div class="landmarks-list">
+                                    ${place.landmarks.map(landmark => `
+                                        <span class="landmark">${landmark}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${place.notes ? `
+                            <div class="details-section">
+                                <h4><i class="fas fa-sticky-note"></i> Notes & Memories</h4>
+                                <p class="details-notes">${place.notes}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${place.tags.length > 0 ? `
+                            <div class="details-section">
+                                <h4><i class="fas fa-tags"></i> Tags</h4>
+                                <div class="details-tags">
+                                    ${place.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="details-actions">
+                            <button class="btn btn-delete-full" data-id="${place.id}">
+                                <i class="fas fa-trash"></i> Delete This Place
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listener to delete button in details
+                placeDetails.querySelector('.btn-delete-full').addEventListener('click', function() {
+                    const placeId = this.getAttribute('data-id');
+                    deletePlace(placeId);
+                });
+                
+                // Show details panel on mobile
+                document.querySelector('.place-details').classList.add('active');
+            }
+            
+            // Delete place
+            function deletePlace(id) {
+                if (confirm('Are you sure you want to delete this place?')) {
+                    journal.removePlace(id);
+                    renderPlaces();
+                    updateStats();
+                    showNotification('Place deleted successfully', 'success');
+                    
+                    // Clear details if viewing deleted place
+                    if (document.querySelector('.place-details.active')) {
+                        placeDetails.innerHTML = `
+                            <div class="empty-details">
+                                <i class="fas fa-hand-pointer"></i>
+                                <p>Click on a place to view its details</p>
+                            </div>
+                        `;
+                        document.querySelector('.place-details').classList.remove('active');
+                    }
+                }
+            }
+            
+            // Update statistics
+            function updateStats() {
+                const stats = journal.getStats();
+                statsElement.innerHTML = `
+                    Total Places: ${stats.total} • 
+                    Average Rating: ${stats.avgRating} • 
+                    Most Visited Season: ${stats.mostVisitedSeason}
+                `;
+            }
+            
+            // Helper functions
+            function truncateText(text, maxLength) {
+                if (text.length <= maxLength) return text;
+                return text.substr(0, maxLength) + '...';
+            }
+            
+            function formatDate(date) {
+                return new Date(date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+            
+            function showNotification(message, type) {
+                // Remove existing notification
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                // Create new notification
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Auto-remove after 3 seconds
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            
+            
+            // Initialize app
+            function init() {
+                renderPlaces();
+                updateStats();
+                addSampleData();
+            }
+            
+            // Initialize the app
+            init();
+        });
+    </script>
+</body>
+</html>
