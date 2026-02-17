@@ -1,4 +1,4 @@
-<!DOCT`YPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1555,7 +1555,20 @@
                 }, 3000);
             }
             
-            
+            // Add sample data function
+            function addSampleData() {
+                if (journal.getAllPlaces().length === 0) {
+                    const samplePlaces = [
+                        new Place("Paris, France", ["Eiffel Tower", "Louvre Museum"], "Summer", 2023, "Amazing city with rich history!", 5, ["romantic", "culture", "food"]),
+                        new Place("Tokyo, Japan", ["Tokyo Tower", "Senso-ji Temple"], "Spring", 2022, "Beautiful cherry blossoms!", 5, ["culture", "technology", "family"]),
+                        new Place("New York, USA", ["Statue of Liberty", "Central Park"], "Fall", 2021, "The city that never sleeps!", 4, ["city", "shopping", "entertainment"])
+                    ];
+                    
+                    samplePlaces.forEach(place => journal.addPlace(place));
+                    renderPlaces();
+                    updateStats();
+                }
+            }
             
             // Initialize app
             function init() {
